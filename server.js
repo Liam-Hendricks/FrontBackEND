@@ -7,13 +7,7 @@ app.use(bodyParser.json())
 
 
 const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname, 'project-app/build')));
-    app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
-    'project-app', 'build','index.html'));
-    });
-}
-app.use(express.static(path.join(__dirname,'project-app/build')));
+
 
 //get method 
 app.get("/projects", function (req, res) {
@@ -119,6 +113,13 @@ app.put("/update", (req, res) => {
   });
 });
 
+if (process.env.NODE_ENV === 'production'){
+  app.use(express.static('project-app/build'));
+  // app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
+  // 'project-app', 'build','index.html'));
+  // });
+}
+// app.use(express.static(path.join(__dirname,'project-app/build')));
 
 app.listen(PORT, () => {
   console.log(
