@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 
 //get method 
@@ -14,6 +14,7 @@ app.get("/projects", function (req, res) {
   fileHandler.readFile("web_project.json", (err, data) => {
     if (err) {
         res.json({"message": 'File not found. First post to create file.'});
+
     } else {
         let Data = JSON.parse(data);
       res.json({"data":Data.Web_projects});
@@ -113,12 +114,12 @@ app.put("/update", (req, res) => {
   });
 });
 
-if (process.env.NODE_ENV === 'production'){
-  app.use(express.static('project-app/build'));
-  // app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
-  // 'project-app', 'build','index.html'));
-  // });
-}
+// if (process.env.NODE_ENV === 'production'){
+//   app.use(express.static('project-app/build'));
+//   // app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
+//   // 'project-app', 'build','index.html'));
+//   // });
+// }
 // app.use(express.static(path.join(__dirname,'project-app/build')));
 
 app.listen(PORT, () => {
