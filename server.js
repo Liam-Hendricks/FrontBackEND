@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 
-
+const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV === 'production'){
     app.use(express.static(path.join(__dirname, 'project-app/build')));
     app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
@@ -119,7 +119,7 @@ app.put("/update", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
   console.log(
     `Server is listening on port ${PORT}. Open http://localhost:${PORT}`
