@@ -117,12 +117,10 @@ app.put("/update", (req, res) => {
 if (process.env.NODE_ENV === 'production'){
   app.use(express.static(path.join(__dirname, 'project-app/build')));
  
-  // app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
-  // 'project-app', 'build','index.html'));
-  // });
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/project-app/build/index.html'));
+  app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
+  'project-app', 'build','index.html'));
   });
+ 
 }
 
 // app.use(express.static(path.join(__dirname,'project-app/build')));
