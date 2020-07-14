@@ -8,8 +8,9 @@ import {Link} from 'react-router-dom';
 function Items(props){
     
     
-    
+    //stateless component
     const Projects=props.data;
+    //mapping the current array data to table rows
     const mapper = Projects.map((data)=>
             <tr key={data.id}>
                 <td>{data.id}</td>
@@ -22,7 +23,7 @@ function Items(props){
             </tr>
         );
     
-        
+        //returning table
         return(
         <Table striped bordered hover>
             <thead>
