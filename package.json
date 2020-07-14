@@ -5,8 +5,11 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install project-app && npm run build project-app"
+    "build":"cd project-app && npm run build",
+    "install-project-app": " cd project-app && npm install",
+    "start": "node server.js",
+    "client":"cd project-app && npm start",
+    "heroku-postbuild":"npm run install-project-app  && npm run build"
   },
   "author": "",
   "license": "ISC",
