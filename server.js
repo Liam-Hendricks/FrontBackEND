@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const fileHandler = require("fs");
 const bodyParser = require('body-parser');
+const path = require('path');
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
@@ -117,8 +118,8 @@ app.put("/update", (req, res) => {
 if (process.env.NODE_ENV === 'production'){
   app.use(express.static(path.join(__dirname, 'project-app/build')));
  
-  app.get('*',(req,res)=> {res.sendFile(path.resolve(__dirname,
-  'project-app', 'build','index.html'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/project-app/build/index.html'));
   });
  
 }

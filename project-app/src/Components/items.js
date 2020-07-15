@@ -19,7 +19,6 @@ function Items(props){
                 <td><a href={data.URL}>{data.URL}</a></td>
                 <td><Link to='/Edit'><Button variant='primary' onClick={()=>props.updateHandler(data.id)}>Edit</Button></Link></td>
                 <td><Button variant='danger' onClick={() =>props.eventHandler(data.id)}>X</Button></td>
-                
             </tr>
         );
     
