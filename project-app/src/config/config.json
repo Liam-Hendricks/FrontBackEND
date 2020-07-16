@@ -1,0 +1,8 @@
+{
+    "url":{
+        "POST":"/project",
+        "READ":"/projects",
+        "UPDATE":"/update",
+        "DELETE":"/delete"
+    }
+}

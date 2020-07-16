@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Container, Form, Col, Row, Card, Button } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Items from "./Components/items";
 import Edit from "./Components/edit";
+import Add from "./Components/add";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Route } from "react-router-dom";
+const crudMethods = require('./Modules/CRUD.js');
+const myFunctions =require('./Modules/HelperFunctions.js');
 
 class App extends Component {
   constructor(props) {
@@ -31,60 +34,22 @@ class App extends Component {
   }
   //this fetch gets the current data from web_projects.json
   componentDidMount() {
-    console.log("componentDidMount");
-    fetch("/projects")
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log("Result");
-          this.setState({
-            Projects: result.data,
-          });
-          //calling the createID handler
-          this.createID();
-        },
-        (error) => {
-          console.log(error);
-          this.setState({
-            error,
-          });
-        }
-      );
+    crudMethods.READ()
+    .then((result)=> this.setState({ Projects: result.data}))
+    .then(()=>this.createID())
+    .catch((error) => this.setState({error })); 
+  
   }
   //this event handles api post 
   handleSubmit(e) {
     const { nextID, title, description, url } = this.state;
-    fetch("/project", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: nextID,
-        title: title,
-        description: description,
-        link: url,
-      }),
-    })
-      .then((res) => res.json())
-      
-      .then((response) => this.componentDidMount())//if the Post is successfull then get the update data
-      .catch((error) => console.log("Error:", error));
+    crudMethods.CREATE(nextID, title, description, url ).then(this.componentDidMount());
     e.preventDefault();
   }
   //this event handles deleting projects
   handleClick(id) {
-    fetch("/delete", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    })
-      .then((res) => res.json())
-      .then((response) => console.log(`item with id:${id} removed`))
-      .then(() => this.componentDidMount())
-      .catch((error) => console.log("Error:", error));
+    crudMethods.DELETE(id).then(()=>this.componentDidMount());
+   
   }
   //event handler changes state data 
   handleChangeTitle(event) {
@@ -100,24 +65,13 @@ class App extends Component {
   }
   //event handler changes state data
   updateHandler(id) {
-    let array = this.state.Projects;
-    let filtered = array.filter(function (el) {
-      return el.id === id;
-    });
-    this.setState({ EditObj: filtered[0] });
+      //setting the object that is being edited
+    this.setState({ EditObj: myFunctions.filterArray(this.state.Projects,id) });
   }
   //event handler gets the maxium id value and sets the nextID value
   createID() {
-    let array = this.state.Projects;
-    var max = array.reduce(function (prev, current) {
-      if (+current.id > +prev.id) {
-        return current;
-      } else {
-        return prev;
-      }
-    });
-    let value = max.id + 1;
-    this.setState({ nextID: value });
+  
+    this.setState({ nextID: myFunctions.FindMax(this.state.Projects) });
   }
   //event for reloading component when exiting the edit component
   Editing(e) {
@@ -126,7 +80,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, Projects } = this.state;
+    const { error, Projects,nextID } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
     } else
@@ -139,9 +93,8 @@ class App extends Component {
             crossOrigin="anonymous"
           />
           <BrowserRouter>
-            <Route
-              exact={true}
-              path="/"
+             {/* this route uses a render to handle two components rendering with one path */}
+            <Route exact={true} path="/"
               render={() => (
                 <Container style={style}>
                   <Items
@@ -149,50 +102,13 @@ class App extends Component {
                     eventHandler={this.handleClick}
                     updateHandler={this.updateHandler}
                   />
-                  <Card>
-                    <Card.Body>
-                      <Form id="form" onSubmit={this.handleSubmit}>
-                        <Row>
-                          <Col>
-                            <Form.Control
-                              value={this.state.nextID}
-                              readOnly={true}
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Control
-                              placeholder="Title"
-                              id="title"
-                              name="title"
-                              onChange={this.handleChangeTitle}
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Control
-                              placeholder="Description"
-                              id="description"
-                              name="description"
-                              onChange={this.handleChangeDescription}
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Control
-                              placeholder="URL"
-                              id="url"
-                              name="url"
-                              onChange={this.handleChangeURL}
-                            />
-                          </Col>
-
-                          <Col>
-                            <Button variant="primary" type="submit">
-                              Add
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Form>
-                    </Card.Body>
-                  </Card>
+                  <Add 
+                    nextID={nextID} 
+                    titleChange={this.handleChangeTitle} 
+                    descriptionChange={this.handleChangeDescription} 
+                    urlChange={this.handleChangeURL} 
+                    submit={this.handleSubmit}
+                  />
                 </Container>
               )}
             />
@@ -211,3 +127,5 @@ const style = {
   paddingTop: "50px",
 };
 export default App;
+
+

@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Form, Button, Col, Row, Container } from "react-bootstrap";
 import { Component } from "react";
 import { Link } from "react-router-dom";
+const crud = require('../Modules/CRUD.js');
 
 class Edit extends Component {
     //setting current project data the user is editing in state
@@ -24,21 +25,7 @@ class Edit extends Component {
   //when submit is click the new updated data is send to the PUT api endpoint
   handleSubmit(e) {
     const { id, title, description, url } = this.state;
-    fetch("/update", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-        title: title,
-        description: description,
-        link: url,
-      }),
-    })
-      .then((res) => res.json())
-      .then((response) => alert("changes made"))
-      .catch((error) => console.log("Error:", error));
+    crud.UPDATE(id,title,description,url);
     e.preventDefault();
   }
   //event handler changes state data
